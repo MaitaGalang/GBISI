@@ -35,7 +35,7 @@
 										
 									</td>
 									<td width="77%" valign="top">
-										<form action="<?=base_url("invoices/print_preview")?>" method="POST" name="frmPreview" id="frmPreview">
+										<form action="<?=base_url("invoices/print_preview")?>" method="POST" name="frmPreview" id="frmPreview" target="_blank">
 										<fieldset>
 											<legend> <strong>TRANSACTIONS LIST</strong> </legend>
 											
@@ -101,7 +101,7 @@
 									$.each(data,function(index,item){
 										var nmgross = parseFloat(item.gross);
 										
-										var chkbox = "<td><input type=\"checkbox\" name=\"chkTranNo[]\" id=\"chkTranNo"+item.id+"\" value=\""+item.order_no+"\" /></td>";
+										var chkbox = "<td><input type=\"checkbox\" name=\"chkTranNo[]\" id=\"chkTranNo"+item.id+"\" value=\""+item.id+"\" /></td>";
 										var ordno = "<td><a href=\"#\" onClick=\"return view_tran('"+item.id+"');\">"+item.order_no+"</a></td>";
 										var printno = "<td>" + item.invoice_series + "</td>";
 										var custid = "<td>"+item.customer_cbb_code+"</td>";

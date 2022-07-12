@@ -144,12 +144,64 @@ class Invoice extends My_Controller
       $dtefr = $_REQUEST['dfrom'];
       $dteto = $_REQUEST['dteto'];
 
-      $xlist = $this->Core_model->load_core_data('invoice_hdr','','',array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto));
+      $xlist = $this->Core_model->load_core_data('invoice_hdr','','',array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto, 'lprinted' => 'f'));
 
       echo json_encode($xlist);
-    }elseif($typ=="print_preview"){
 
-    }else{    
+    }elseif($typ=="print_preview"){
+      
+
+     // print_r($_POST['chkTranNo']);
+
+     // echo "<br>";
+
+     // echo implode(",", $_POST['chkTranNo']);
+      //echo "<br>";
+
+      $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','',array('id' => $_POST['chkTranNo']));
+     // echo $this->db->last_query();
+      //echo "<br>";
+      foreach($data['invhdr'] as $gettrans){
+        @$translist[] = $gettrans->transaction_no;
+      }
+
+      $data['invdtl'] = $this->Core_model->load_core_data('invoice_dtl','','*','','',array('transaction_no' => @$translist));
+      //echo $this->db->last_query();
+
+      $data['custlist'] = $this->Core_model->load_core_data_all('customers');
+      $data['itmlist'] = $this->Core_model->load_core_data_all('items');
+      $data['params'] = $this->Core_model->load_core_data_all('parameters', '','',array('type' => 'PAYTERM'));
+
+      $data['chkTranNo'] = $_POST['chkTranNo'];
+
+      $this->load->view('transactions/invoice_preview',$data);
+
+      
+
+    }elseif($typ=="print"){
+
+      //set as printed
+      $model = $this->db->query("Update invoice_hdr set lprinted=true where id in('".implode("','", $_POST['chkTranNo'])."')");
+
+      if($model){
+        $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','',array('id' => $_POST['chkTranNo']));
+        foreach($data['invhdr'] as $gettrans){
+          @$translist[] = $gettrans->transaction_no;
+        }
+  
+        $data['invdtl'] = $this->Core_model->load_core_data('invoice_dtl','','*','','',array('transaction_no' => @$translist));
+  
+        $data['custlist'] = $this->Core_model->load_core_data_all('customers');
+        $data['itmlist'] = $this->Core_model->load_core_data_all('items');
+        $data['params'] = $this->Core_model->load_core_data_all('parameters', '','',array('type' => 'PAYTERM'));
+  
+        $data['chkTranNo'] = $_POST['chkTranNo'];
+  
+        $this->load->view('transactions/invoice_print',$data);
+
+      }
+ 
+     }else{    
       if (in_array("view", $data['access'])){
           $data['loaded_page'] = "transactions/invoice_list"; 
           $data['form_name'] = "Invoice";
@@ -458,14 +510,27 @@ class Invoice extends My_Controller
   public function batch_print(){
     $data = $this->init_vals();
 
-    $data['access'] = $this->check_access(10); //id in nav_menu table
+    $data['access'] = $this->check_access(11); //id in nav_menu table
 
-    $data['loaded_page'] = "transactions/batch_printing"; 
-    $data['form_name'] = "Batch Printing";
+    if (in_array("print", $data['access'])){
 
-    $data['invhdr'] = $this->Core_model->load_core_data_all('invoice_hdr');
+      $data['loaded_page'] = "transactions/batch_printing"; 
+      $data['form_name'] = "Batch Printing";
 
-    $this->load->view('index',$data);
+      $data['invhdr'] = $this->Core_model->load_core_data_all('invoice_hdr');
+
+      $this->load->view('index',$data);
+
+    }else{    
+      if (in_array("view", $data['access'])){
+          $data['loaded_page'] = "transactions/invoice_list"; 
+          $data['form_name'] = "Invoice";
+
+          $this->load->view('index',$data);
+      }else{
+          redirect("denied");
+      } 
+    }
   }
   
 

@@ -40,6 +40,9 @@
                                                     if($rs_inv->is_active==2){
                                                         echo "<br><span class='text-danger'>Cancelled</span>";
                                                     }
+                                                    if($rs_inv->lprinted=="t"){
+                                                        echo "<br><span class='text-danger'>Printed</span>";
+                                                    }
                                                 ?>
                                             </td>
                                             <td><?=$rs_inv->order_type;?></td>
@@ -66,7 +69,7 @@
                                             <?php
                                                 if (in_array("edit", $access)){
                                             ?>
-                                            <a href="<?=base_url("invoices/edit/".$rs_inv->id);?>" class="btn btn-success btn-sm <?=($rs_inv->is_active==2)? "disabled" : ""?>" alt="Edit Details" title="Edit Details">
+                                            <a href="<?=base_url("invoices/edit/".$rs_inv->id);?>" class="btn btn-success btn-sm <?=($rs_inv->is_active==2 || $rs_inv->lprinted=="t")? "disabled" : ""?>" alt="Edit Details" title="Edit Details">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <?php

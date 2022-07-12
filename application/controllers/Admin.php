@@ -687,7 +687,7 @@ class Admin extends My_Controller
 
         $data['versions'] = $_POST['hdnvers'];
 
-          $this->load->view('index',$data);
+        $this->load->view('index',$data);
 
       }else{
           redirect("denied");
