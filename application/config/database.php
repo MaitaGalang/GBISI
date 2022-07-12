@@ -69,13 +69,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $active_group = 'default';
 $db['default'] = array(
-	'dsn'	=> '',
+	//'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
-	'dbdriver' => 'mysqli',
+	'username' => 'postgres',
+	'password' => 'MySql2016',
+	'database' => 'gbisi',
+	'dbdriver' => 'postgre',
 	'dbprefix' => '',
+	'port'   => 5432,
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,

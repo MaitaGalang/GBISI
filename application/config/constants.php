@@ -83,3 +83,14 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+/* custom variable */
+define('sdate',  date("m-d-Y"));
+define('datedb',  date("Y-m-d"));
+define('datetimedb',  date("Y-m-d H:i:s"));
+define('sdatetime',  date("m-d-Y H:i:s"));
+define('dateformat',"m/d/Y");
+define('dateformatc',"F d, Y");
+define('datetimeformatc',"F d, Y H:i");
+define('dateformatMY',"F Y");
+define('dateformatdb',"Y-m-d");

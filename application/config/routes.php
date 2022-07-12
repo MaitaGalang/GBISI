@@ -49,6 +49,67 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'welcome';
-$route['404_override'] = '';
+
+$route['login'] = 'Login';
+$route['Logout'] = 'Logout/index';
+$route['denied'] = 'Admin/denied';
+
+$route['login_company'] = 'Login/login_company';
+$route['login_company/(:any)'] = 'Login/login_company/$1';
+
+$route['ForgotPassword'] = 'Login/forgotPassword';
+$route['resetPassword'] = 'Login/resetPasswordUser';
+$route['resetPasswordConfirmUser'] = "Login/resetPasswordConfirmUser";
+$route['resetPasswordConfirmUser/(:any)'] = "Login/resetPasswordConfirmUser/$1";
+$route['resetPasswordConfirmUser/(:any)/(:any)'] = "Login/resetPasswordConfirmUser/$1/$2";
+$route['createPasswordUser'] = "Login/createPasswordUser";
+
+$route['dashboard'] = "Admin/index";
+
+$route['users'] = "Admin/users";
+$route['users/(:any)'] = "Admin/users/$1";
+$route['users/(:any)/(:any)'] = "Admin/users/$1/$2";
+
+$route['roles'] = "Admin/roles";
+$route['roles/(:any)'] = "Admin/roles/$1";
+$route['roles/(:any)/(:any)'] = "Admin/roles/$1/$2";
+
+$route['items'] = "Admin/items";
+$route['items/(:any)'] = "Admin/items/$1";
+$route['items/(:any)/(:any)'] = "Admin/items/$1/$2";
+
+$route['price_matrix'] = "Admin/price_matrix";
+$route['price_matrix/(:any)'] = "Admin/price_matrix/$1";
+$route['price_matrix/(:any)/(:any)'] = "Admin/price_matrix/$1/$2";
+
+
+$route['customers'] = "Admin/customers";
+$route['customers/(:any)'] = "Admin/customers/$1";
+$route['customers/(:any)/(:any)'] = "Admin/customers/$1/$2";
+
+$route['parameters'] = "Admin/parameters";
+$route['parameters/(:any)'] = "Admin/parameters/$1";
+$route['parameters/(:any)/(:any)'] = "Admin/parameters/$1/$2";
+//$route['users_add'] = "Admin/users_add";
+
+
+$route['invoices'] = "Invoice/invoice_list";
+$route['invoices/(:any)'] = "Invoice/invoice_list/$1";
+$route['invoices/(:any)/(:any)'] = "Invoice/invoice_list/$1/$2";
+
+$route['invoice_uploadcheck'] = "Invoice/invoice_uploadcheck"; 
+$route['invoice_vieworders'] = "Invoice/invoice_vieworders"; 
+
+$route['batch_printing'] = "Invoice/batch_print"; 
+
+
+$route['upload_csv'] = "Invoice/invoice_upload";
+$route['upload_csv/(:any)'] = "Invoice/invoice_upload/$1";
+$route['upload_csv/(:any)/(:any)'] = "Invoice/invoice_upload/$1/$2";
+
+
+
+
+$route['default_controller'] = 'Login';
+$route['404_override'] = 'errors/page_missing';
 $route['translate_uri_dashes'] = FALSE;
