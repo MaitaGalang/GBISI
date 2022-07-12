@@ -145,31 +145,28 @@ class Invoice extends My_Controller
     }
     elseif($typ=="update"){
 
-      if (in_array("edit", $data['access'])){
-
+      //if (in_array("edit", $data['access'])){
         $datahdr = array(
           'customer_id' => $_POST['custid'],
           'customer_cbb_code' => $_POST['cbbcode'],
           'customer_ax_code' => $_POST['axcode'],     
-          'invoice_date' => $_POST['date'],
+          'invoice_date' => date("Y-m-d", strtotime($_POST['date'])),
           'remarks' => $_POST['remarks'],
           'gross' => $_POST['gross']
         );
        
         $model = $this->Core_model->custom_update('invoice_hdr',$datahdr, array('id' => $_POST['transid'])); 
-
+        //print_r($model);
         if($model['result']){ 
           //backup muna
-          $invheader = $this->Core_model->load_core_data_all('invoice_hdr',$_POST['transid']);
-
-          $query = $this->db->query("Select date_created,created_by,modified_at,is_active,deleted_at,company_id,transaction_no,items_id,cbb_code,ax_code,description,uom,quantity,price, amount From invoice_dtl Where company_id='".$this->session->userdata('comp_id')."' and transaction_no = '".$invheader[0]->transaction_no."'");
+          $query = $this->db->query("Select is_active,deleted_at,company_id,transaction_no,items_id,cbb_code,ax_code,description,uom,quantity,price, amount From invoice_dtl Where company_id='".$this->session->userdata('comp_id')."' and transaction_no = '".$_POST['transno']."'");
           foreach ($query->result() as $row) {
             $this->db->insert('invoice_dtlbckup',$row);
           }
 
-          $model2 = $this->Core_model->gquery(4,'invoice_dtl','',array('transaction_no' => $invheader[0]->transaction_no));
+          $model2 = $this->Core_model->gquery(4,'invoice_dtl','',array('transaction_no' => $_POST['transno']));
           if($model['result']){
-            echo $model['query_id'];
+            echo $_POST['transno'];
           // echo $this->db->last_query();
           }else{
             echo "Error";
@@ -181,9 +178,9 @@ class Invoice extends My_Controller
 
         }
 
-      }else{
-        redirect("denied");
-      } 
+      //}else{
+      //  redirect("denied");
+      //} 
     }
     elseif($typ=="cancel"){
       if (in_array("cancel", $data['access'])){

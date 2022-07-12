@@ -8,7 +8,9 @@
 
                     <div class="card shadow mb-4">
                         <form action="<?=base_url("invoices/updatehdr")?>" method='post' name="frmaddpm" id="frmaddpm">
-                        <input type='hidden' id="transaction_no" name="transaction_no" value="<?=$invheader->id?>" />
+                        <input type='hidden' id="transaction_id" name="transaction_id" value="<?=$invheader->id?>" />
+                        <input type='hidden' id="transaction_no" name="transaction_no" value="<?=$invheader->transaction_no?>" />
+
                             <div class="card-body">
 
                                 <div class="row pb-1 pl-3">
@@ -320,7 +322,9 @@
 		autoApply: true,
 		singleDatePicker: true,
         showDropdowns: true,
-        minDate: new Date(),    
+        minDate: new Date(),
+        startDate: '<?=date("m/d/Y", strtotime($invheader->invoice_date))?>',  
+        endDate: '<?=date("m/d/Y", strtotime($invheader->invoice_date))?>',    
 	});
 
     $('#date_delivery, #selcust').on("change", function(){
@@ -364,9 +368,10 @@
                 var issaved = "";
                 var trancode = "";
                             //INSERTING HEADER
+                            //alert("<?=base_url("invoices/update")?>/?transid="+$("#transaction_id").val()+"&transno="+$("#transaction_no").val()+"&custid="+$("#selcust").find(':selected').data('id')+"&cbbcode="+$("#selcust").find(':selected').data('cbb')+"&axcode="+$("#selcust").find(':selected').data('ax')+"&date="+$("#date_delivery").val()+"&remarks="+$("#txtcdescription").val()+"&gross="+$("#txtgross").val());
                             $.ajax ({
                                 url: "<?=base_url("invoices/update")?>",
-                                data: { transid: $("#transaction_no").val(), custid: $("#selcust").find(':selected').data('id'), cbbcode: $("#selcust").find(':selected').data('cbb'), axcode: $("#selcust").find(':selected').data('ax'), date: $("#date_delivery").val(), remarks: $("#txtcdescription").val(), gross: $("#txtgross").val() },
+                                data: { transid: $("#transaction_id").val(), transno: $("#transaction_no").val(), custid: $("#selcust").find(':selected').data('id'), cbbcode: $("#selcust").find(':selected').data('cbb'), axcode: $("#selcust").find(':selected').data('ax'), date: $("#date_delivery").val(), remarks: $("#txtcdescription").val(), gross: $("#txtgross").val() },
                                 async: false,
                                 type: 'POST',
                                 beforeSend: function(){

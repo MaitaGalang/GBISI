@@ -308,17 +308,22 @@ class Core_model extends CI_Model
         $this->db->where('company_id',$this->session->userdata('comp_id')); 
         $result = $this->db->update($table, $data); 
 
-        $this->tologfile($table,'Update',$this->db->last_query(),$getidval[0]->id);
-
+        $vxqry = $this->db->last_query();
 
         $result = ($this->db->affected_rows() != 1) ? false : true;
 
        
 
         $getidval = $this->load_core_data($table,'','',$whre);
+
+        $vxqry2= $this->db->last_query();
+
+        $this->tologfile($table,'Update', $vxqry,$getidval[0]->id);
+
+
         //get id
         return array(
-            'result'  => $result,
+            'result'  => $vxqry,
             'query_id' => $getidval[0]->id
         );
 
