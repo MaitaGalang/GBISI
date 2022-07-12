@@ -10,7 +10,7 @@
                                 <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Order No.</th>
+                                            <th>Ref No.</th>
                                             <th>Order Type</th>
                                             <th>Series</th>
                                             <th>Code</th>
@@ -21,7 +21,7 @@
                                     </thead>
                                     <tfoot>
                                     <tr>
-                                            <th>Order No.</th>
+                                            <th>Ref No.</th>
                                             <th>Order Type</th>
                                             <th>Series</th>
                                             <th>Customer CBB Code</th>
@@ -35,7 +35,7 @@
                                             foreach($invlist as $rs_inv){
                                         ?>
                                         <tr>
-                                            <td><?=$rs_inv->order_no?>
+                                            <td><?=$rs_inv->transaction_no?>
                                                 <?php
                                                     if($rs_inv->is_active==2){
                                                         echo "<br><span class='text-danger'>Cancelled</span>";

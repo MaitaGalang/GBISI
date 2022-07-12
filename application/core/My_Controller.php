@@ -10,6 +10,8 @@ class My_Controller extends CI_Controller
 
 	public function init_vals()
 	{
+		
+
 		$data['username'] = $this->session->userdata('uname');
 		$data['userid'] = $this->session->userdata('usrid'); 
 		$data['userpic'] = $this->session->userdata('clogpic');

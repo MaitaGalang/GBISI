@@ -108,7 +108,7 @@ $route['upload_csv/(:any)'] = "Invoice/invoice_upload/$1";
 $route['upload_csv/(:any)/(:any)'] = "Invoice/invoice_upload/$1/$2";
 
 
-
+$route['check_price'] = "Invoice/check_price";
 
 $route['default_controller'] = 'Login';
 $route['404_override'] = 'errors/page_missing';

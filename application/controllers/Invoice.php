@@ -14,6 +14,8 @@ class Invoice extends My_Controller
       {
          redirect('Logout');
       }
+    
+    $data['searchdata'] = $this;
 	}
 
   public function index()
@@ -56,14 +58,80 @@ class Invoice extends My_Controller
            redirect("denied");
        }
     }
-    elseif($typ=="edit"){
+    elseif($typ=="savehdr"){ //custid: $("#selcust").find(':selected').data('id'), cbbcode: $("#selcust").find(':selected').data('cbb'), axcode: $("#selcust").find(':selected').data('ax'), date: $("#date_delivery").val(), remarks: $("#txtcdescription").val(), gross: $("#txtgross").val() 
+
+        $query = $this->db->query("Select RIGHT(transaction_no,6) as tranno FROM invoice_hdr WHERE company_id='".$this->session->userdata('comp_id')."' and order_type='MSI' and customer_id=".$_POST['custid']." and extract(month FROM invoice_date::date)=extract(month FROM CURRENT_DATE::date) and extract(year FROM invoice_date::date)=extract(year FROM CURRENT_DATE::date)");
+        $modl = $query->result();
+
+        if(count($modl)==0){
+          $base = "000000";
+        }else{
+          $base = (int)$modl[0]->tranno;
+          $base = $base + 1;
+          $base = sprintf('%06d', $base);
+        }
+
+        $tranno = 'MSI'.$_POST['cbbcode'].$base;
+        $datahdr = array(
+          'transaction_no' => $tranno,
+          'customer_id' => $_POST['custid'],
+          'customer_cbb_code' => $_POST['cbbcode'],
+          'customer_ax_code' => $_POST['axcode'],     
+          'invoice_date' => $_POST['date'],
+          'remarks' => $_POST['remarks'],
+          'gross' => $_POST['gross'],
+          'order_no' => '0',
+          'order_type' => 'MSI'
+        );
+       
+        $model = $this->Core_model->custom_insert('invoice_hdr',$datahdr); 
+
+        if($model['result']){ 
+          
+          echo $tranno; 
+
+        }else{
+          
+          echo "Error";
+
+        }
+
+    }
+    elseif($typ=="savedtl"){ //refid: trancode, valzid: valzid, valzcbb: valzcbb, valzax: valzax, valzdsc: valzdsc, valzuom: valzuom, valzprice: valzprice, valzamt: valzamt, valzqty: valzqty
+
+      $datadtl = array(
+        'transaction_no' => $_POST['refid'],
+        'items_id' => $_POST['valzid'],
+        'cbb_code' => $_POST['valzcbb'],
+        'ax_code' => $_POST['valzax'],
+        'description' => $_POST['valzdsc'],
+        'uom' => $_POST['valzuom'],
+        'quantity' => $_POST['valzqty'],
+        'price' => $_POST['valzprice'],
+        'amount' => $_POST['valzamt']
+      );
+     
+      $model = $this->Core_model->custom_insert('invoice_dtl',$datadtl); 
+
+      if($model['result']){ 
+        
+        //echo $model['query_id']; 
+        echo "True";
+
+      }else{
+        
+        echo "Error";
+
+      }
+
+    }elseif($typ=="edit"){
       if (in_array("edit", $data['access'])){ 
       
         $data['invheader'] = $this->Core_model->load_core_data_all('invoice_hdr',$id);
         $data['invdetails'] = $this->Core_model->load_core_data_all('invoice_dtl','','',array('transaction_no' => $data['invheader']->transaction_no));
 
         $data['loaded_page'] = "transactions/invoice_edit"; 
-        $data['form_name'] = "Update Invoice: ".$data['invheader']->order_no;
+        $data['form_name'] = "Update Invoice: ".$data['invheader']->transaction_no;
  
         if($data['invheader']->is_active==2){
           redirect("invoices");
@@ -79,19 +147,39 @@ class Invoice extends My_Controller
 
       if (in_array("edit", $data['access'])){
 
-        $model = $this->Core_model->gquery(2, 'users', $id); 
+        $datahdr = array(
+          'customer_id' => $_POST['custid'],
+          'customer_cbb_code' => $_POST['cbbcode'],
+          'customer_ax_code' => $_POST['axcode'],     
+          'invoice_date' => $_POST['date'],
+          'remarks' => $_POST['remarks'],
+          'gross' => $_POST['gross']
+        );
+       
+        $model = $this->Core_model->custom_update('invoice_hdr',$datahdr, array('id' => $_POST['transid'])); 
 
         if($model['result']){ 
-          
-          $this->session->set_flashdata("success","New User Successfuly Updated."); 
+          //backup muna
+          $invheader = $this->Core_model->load_core_data_all('invoice_hdr',$_POST['transid']);
+
+          $query = $this->db->query("Select date_created,created_by,modified_at,is_active,deleted_at,company_id,transaction_no,items_id,cbb_code,ax_code,description,uom,quantity,price, amount From invoice_dtl Where company_id='".$this->session->userdata('comp_id')."' and transaction_no = '".$invheader[0]->transaction_no."'");
+          foreach ($query->result() as $row) {
+            $this->db->insert('invoice_dtlbckup',$row);
+          }
+
+          $model2 = $this->Core_model->gquery(4,'invoice_dtl','',array('transaction_no' => $invheader[0]->transaction_no));
+          if($model['result']){
+            echo $model['query_id'];
+          // echo $this->db->last_query();
+          }else{
+            echo "Error";
+          }
 
         }else{
           
-          $this->session->set_flashdata("error","error on updating."); 
+          echo "Error";
 
         }
-
-		    redirect("users","refresh");
 
       }else{
         redirect("denied");
@@ -234,7 +322,7 @@ class Invoice extends My_Controller
             foreach($invhdr as $rssoh) {
               $get_cust = $this->Core_model->load_core_data('customers','','',array('cbb_code' => $rssoh->cust_code));
                 
-              $tranno = $rssoh->order_type.$get_cust[0]->cbb_code.date('mdY', strtotime($rssoh->delivery_date))."_".$rssoh->order_no;
+              $tranno = $rssoh->order_type.$get_cust[0]->cbb_code.$rssoh->order_no;
 
               $reschk = $this->Core_model->load_core_data('invoice_hdr','','',array('transaction_no' => $tranno));
               //print_r($reschk);
@@ -277,7 +365,7 @@ class Invoice extends My_Controller
 
                   $get_cust = $this->Core_model->load_core_data('customers','','',array('cbb_code' => $rssol->cust_code));
 
-                  $tranno = $rssol->order_type.$get_cust[0]->cbb_code.date('mdY', strtotime($rssol->delivery_date))."_".$rssol->order_no;
+                  $tranno = $rssol->order_type.$get_cust[0]->cbb_code.$rssol->order_no;
 
                   $reschk = $this->Core_model->load_core_data('invoice_hdr','','',array('transaction_no' => $tranno));
                   if (count($reschk)==0){
@@ -326,7 +414,7 @@ class Invoice extends My_Controller
 
             foreach($invhdr as $rssoh) {
               $get_cust = $this->Core_model->load_core_data('customers','','',array('cbb_code' => $rssoh->cust_code));
-              $tranno = $rssoh->order_type.$get_cust[0]->cbb_code.date('mdY', strtotime($rssoh->delivery_date))."_".$rssoh->order_no;
+              $tranno = $rssoh->order_type.$get_cust[0]->cbb_code.$rssoh->order_no;
 
               $query = $this->db->query("Select SUM(amount) as gross from invoice_dtl where transaction_no = '".$tranno."'");
               $queryres = $query->result();
@@ -376,6 +464,15 @@ class Invoice extends My_Controller
       }
 
     }
+
+  }
+
+  function check_price(){
+
+    $disprice = $this->get_price($_POST['itmcode'],$_POST['deldate'],$_POST['pmcode']);
+
+   // $disprice = $this->get_price(3,'2022-08-01','SPINS013');
+    echo $disprice;
 
   }
 
