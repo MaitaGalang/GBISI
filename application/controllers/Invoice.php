@@ -230,8 +230,30 @@ class Invoice extends My_Controller
       $dteto = $_REQUEST['dteto'];
 
       $xlist = $this->Core_model->load_core_data('invoice_hdr','','',array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto, 'lprinted' => 'f'));
+      $custlist = $this->Core_model->load_core_data('customers');
 
-      echo json_encode($xlist);
+      $asf = array();
+      
+      foreach($xlist as $rsxlist){
+        $asf['id'] = $rsxlist->id;
+        $asf['transaction_no']  = $rsxlist->transaction_no;
+        $asf['invoice_series'] = $rsxlist->invoice_series;
+        $asf['invoice_date']  = $rsxlist->invoice_date;
+        $asf['customer_cbb_code'] = $rsxlist->customer_cbb_code;
+        $asf['gross'] = $rsxlist->gross;
+
+        
+
+        foreach( $custlist as $rscustlist){
+          if($rscustlist->cbb_code==$rsxlist->customer_cbb_code){
+            $asf['name'] = $rscustlist->name;
+          }
+        }
+
+        @$thearray[] = $asf;
+      }
+
+      echo json_encode(@$thearray);
 
     }elseif($typ=="print_preview"){
       

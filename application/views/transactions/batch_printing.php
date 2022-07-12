@@ -4,62 +4,62 @@
 
                     <div class="card shadow mb-4">
                         <div class="card-body">
-							<table width="100%">
-								<tr>
-									<td width="15%" valign="top" class="pr-5">
+								<table width="100%">
+									<tr>
+										<td width="15%" valign="top" class="pr-5">
 
-										<fieldset>
-											<legend> <strong>DATE RANGE</strong> </legend>
-												<table width="100%" cellpadding="2" cellspacing="2">
-												
-													<tr>
-														<td width="87%" align="left">
-															<input class="form-control form-control-sm" name="ADate" type="text" id="ADate" value="<?=date("Y-m-d")?>"/>
-														</td>
-													</tr>
+											<fieldset>
+												<legend> <strong>DATE RANGE</strong> </legend>
+													<table width="100%" cellpadding="2" cellspacing="2">
 													
-													<tr>
-														<td height="10">&nbsp;</td>
-													</tr>
-													<tr>
-														<td><input type="button" id="btnloadbatch" value="LOAD TRANSACTION" class="btn btn-sm btn-primary btn-block" /></td>
-													</tr>
-													<tr>
-														<td>
-															<input type="button" name="print" id="btnpreview" value="   PRINT PREVIEW  " class="btn btn-sm btn-success btn-block" />
-														</td>
-													</tr>
-										
-												</table>
-										</fieldset>
-										
-									</td>
-									<td width="77%" valign="top">
-										<form action="<?=base_url("invoices/print_preview")?>" method="POST" name="frmPreview" id="frmPreview" target="_blank">
-										<fieldset>
-											<legend> <strong>TRANSACTIONS LIST</strong> </legend>
-											
-												<table class="table table-hover table-sm" id="TblList">
-													<thead class="thead-light">
 														<tr>
-															<th width="4%"><input name="allbox" type="checkbox" value="Check All" onClick="javascript:checkAll(document.frmChk)"></th>
-															<th width="11%" align="left">&nbsp;Order No.</th>
-															<th width="8%" align="left">&nbsp;Print No.</th>
-															<th width="7%" align="left">&nbsp;Cust ID</th>
-															<th width="50%" align="left">&nbsp;Customer Name</th>
-															<th width="9%" align="left">&nbsp;Date</th>
-															<th width="11%" align="left">&nbsp;Gross</th>
+															<td width="87%" align="left">
+																<input class="form-control form-control-sm" name="ADate" type="text" id="ADate" value="<?=date("Y-m-d")?>"/>
+															</td>
 														</tr>
-													</thead>
-													<tbody>
 														
-													</tbody>									
-												</table>
-										</fieldset>
-									</td>
-								</tr>
+														<tr>
+															<td height="10">&nbsp;</td>
+														</tr>
+														<tr>
+															<td><input type="button" id="btnloadbatch" value="LOAD TRANSACTION" class="btn btn-sm btn-primary btn-block" /></td>
+														</tr>
+														<tr>
+															<td>
+																<input type="button" name="print" id="btnpreview" value="   PRINT PREVIEW  " class="btn btn-sm btn-success btn-block" />
+															</td>
+														</tr>
+											
+													</table>
+											</fieldset>
+											
+										</td>
+										<td width="77%" valign="top">
+											<form action="<?=base_url("invoices/print_preview")?>" method="POST" name="frmPreview" id="frmPreview" target="_blank">
+											<fieldset>
+												<legend> <strong>TRANSACTIONS LIST</strong> </legend>
+												
+													<table class="table table-hover table-sm" id="TblList">
+														<thead class="thead-light">
+															<tr>
+																<th width="4%"><input name="allbox" type="checkbox" value="Check All" onClick="checkAll(this.checked)"></th>
+																<th width="11%" align="left">&nbsp;Ref No.</th>
+																<th width="8%" align="left">&nbsp;Series.</th>
+																<th width="7%" align="left">&nbsp;Cust ID</th>
+																<th width="50%" align="left">&nbsp;Customer Name</th>
+																<th width="9%" align="left">&nbsp;Date</th>
+																<th width="11%" align="left">&nbsp;Gross</th>
+															</tr>
+														</thead>
+														<tbody>
+															
+														</tbody>									
+													</table>
+											</fieldset>
+										</td>
+									</tr>
 
-							</table>
+								</table>
 						</div>
 					</div>
 
@@ -102,10 +102,10 @@
 										var nmgross = parseFloat(item.gross);
 										
 										var chkbox = "<td><input type=\"checkbox\" name=\"chkTranNo[]\" id=\"chkTranNo"+item.id+"\" value=\""+item.id+"\" /></td>";
-										var ordno = "<td><a href=\"#\" onClick=\"return view_tran('"+item.id+"');\">"+item.order_no+"</a></td>";
+										var ordno = "<td><a data-toggle=\"modal\" data-target=\"#largeModal\" class=\"dynamod\" href=\"<?=base_url("invoices/view/");?>"+item.transaction_no+"\" >"+item.transaction_no+"</a></td>";
 										var printno = "<td>" + item.invoice_series + "</td>";
 										var custid = "<td>"+item.customer_cbb_code+"</td>";
-										var custnme = "<td>"+item.order_no+"</td>";
+										var custnme = "<td>"+item.name+"</td>";
 										var ddate = "<td>"+item.invoice_date+"</td>";
 										var gross = "<td align=\"right\">"+nmgross.toFixed(4).replace(/(\d)(?=(\d{3})+\.)/g, "1,").toString()+"</td>";
 
@@ -123,6 +123,19 @@
 						$("#btnpreview").on("click", function(){
 							$("#frmPreview").submit();
 						});
+
+						function checkAll(isChecked) {
+							if(isChecked) {
+								$('input[name="chkTranNo[]"]').each(function() { 
+									this.checked = true; 
+								});
+							} else {
+								$('input[name="chkTranNo[]"]').each(function() {
+									this.checked = false;
+								});
+							}
+						}
+
 					</script>
 
 
