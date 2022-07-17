@@ -124,7 +124,8 @@ class Invoice extends My_Controller
 
       }
 
-    }elseif($typ=="edit"){
+    }
+    elseif($typ=="edit"){
       if (in_array("edit", $data['access'])){ 
       
         $data['invheader'] = $this->Core_model->load_core_data_all('invoice_hdr',$id);
@@ -227,9 +228,16 @@ class Invoice extends My_Controller
     elseif($typ=="load_batch_trans"){
 
       $dtefr = $_REQUEST['dfrom'];
-      $dteto = $_REQUEST['dteto'];
+      $dteto = $_REQUEST['dteto']; 
+      $created = $_REQUEST['created'];
 
-      $xlist = $this->Core_model->load_core_data('invoice_hdr','','',array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto, 'lprinted' => 'f'));
+      if($created!=""){
+        $whr = array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto, 'lprinted' => 'f', 'created_by' => $created);
+      }else{
+        $whr = array('invoice_date >=' => $dtefr, 'invoice_date <=' => $dteto, 'lprinted' => 'f');
+      }
+
+      $xlist = $this->Core_model->load_core_data('invoice_hdr','','',$whr);
       $custlist = $this->Core_model->load_core_data('customers');
 
       $asf = array();
@@ -255,7 +263,8 @@ class Invoice extends My_Controller
 
       echo json_encode(@$thearray);
 
-    }elseif($typ=="print_preview"){
+    }
+    elseif($typ=="print_preview"){
       
 
      // print_r($_POST['chkTranNo']);
@@ -279,21 +288,28 @@ class Invoice extends My_Controller
       $data['itmlist'] = $this->Core_model->load_core_data_all('items');
       $data['params'] = $this->Core_model->load_core_data_all('parameters', '','',array('type' => 'PAYTERM'));
 
-      $data['chkTranNo'] = $_POST['chkTranNo'];
+      $data['chkTranNo'] = $_POST['chkTranNo']; 
+      $data['seriesstar'] = $_POST['hdnsseries']; 
 
       $this->load->view('transactions/invoice_preview',$data);
 
       
 
-    }elseif($typ=="print"){
-
+    }
+    elseif($typ=="print"){
+       $myseries = intval($_POST['hdnsseries']);
       //set as printed
       $model = $this->db->query("Update invoice_hdr set lprinted=true where id in('".implode("','", $_POST['chkTranNo'])."')");
 
       if($model){
-        $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','',array('id' => $_POST['chkTranNo']));
+        //$table,$id='',$select='',$condition='',$order='',$wherein='',$groupby=''
+        $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','id ASC',array('id' => $_POST['chkTranNo']));
         foreach($data['invhdr'] as $gettrans){
           @$translist[] = $gettrans->transaction_no;
+
+          //update series
+          $this->Core_model->custom_update('invoice_hdr',array('invoice_series' => $myseries),array('id' => $gettrans->id));
+          $myseries++;
         }
   
         $data['invdtl'] = $this->Core_model->load_core_data('invoice_dtl','','*','','',array('transaction_no' => @$translist));
@@ -376,6 +392,19 @@ class Invoice extends My_Controller
 
                       }
                     }
+              }else{ //if header alrady exist... malamang nag reupload.... delete / backup ung details
+
+                if($reschk[0]->lprinted=='f'){
+
+                  //backup muna
+                  $query = $this->db->query("INSERT INTO invoice_dtlbckup (date_created,created_by,company_id,transaction_no,items_id,cbb_code,ax_code,description,uom,quantity,price,amount) SELECT '".date('Y-m-d H:i:s')."',created_by,company_id,transaction_no,items_id,cbb_code,ax_code,description,uom,quantity,price,amount FROM invoice_dtl where transaction_no = '".$tranno."'");
+                 // $queryres = $query->result();
+
+                  $querydel = $this->db->query("DELETE FROM invoice_dtl WHERE transaction_no = '".$tranno."'");
+                 // $querydelres = $query->result();
+
+                  //delete talaga
+                }
 
               }
             }  
@@ -472,7 +501,7 @@ class Invoice extends My_Controller
         @$fmr[] = $hrdx->hdr_id;
       }
 
-    $allhdr = $this->Core_model->load_core_data('price_matrix_hdr','','',array('pm_code' => $pricecode, 'effect_date <=' => $deldate),'effect_date DESC',array('id' => @$fmr));
+    $allhdr = $this->Core_model->load_core_data('price_matrix_hdr','','',array('pm_code' => $pricecode, 'lposted' => 't', 'effect_date <=' => $deldate),'effect_date DESC',array('id' => @$fmr));
 
       //get the detail
       if(count($allhdr)>0){
@@ -532,15 +561,24 @@ class Invoice extends My_Controller
               if($line[0]!=""){
                 
                 if($line[0]=="SOH"){
-
+                  @$custrmschk = "";
                   $itmpms = $this->Core_model->load_core_data('customers','','',array('cbb_code' => $line[1]));
                   if(count( $itmpms)==0){
                     @$custrmschk = "Customer didn't exist";
                     @$tocheck = "False";
-                  }else{
-                    @$custrmschk = "";
                   }
 
+                  $tranno = $line[3].$line[1].$line[4];
+                  $reschk = $this->Core_model->load_core_data('invoice_hdr','','',array('transaction_no' => $tranno));
+
+                //  echo $tranno."-".count($reschk).":".$reschk[0]->lprinted."<br>";
+                  if (count($reschk)>0){ //check if header no. already exist
+                    if($reschk[0]->lprinted == 't'){
+                      @$custrmschk = "Printed Invoice!";
+                      @$tocheck = "False";
+                    }
+                  }
+                //  echo $tranno."-".@$custrmschk."<br>";
                   $data_ins = array(
                     'order_no' => $line[4],
                     'delivery_date' => $line[2],
@@ -552,7 +590,10 @@ class Invoice extends My_Controller
                   );
                     
                   $model = $this->Core_model->custom_insert('soh', $data_ins); 
+                  
                 }
+
+                //echo @$tocheck;
               
                 if($line[0]=="SOL") {
 
@@ -585,13 +626,14 @@ class Invoice extends My_Controller
                     );
                       
                   $model = $this->Core_model->custom_insert('sol', $data_ins);
+                  @$itmzrmschk = "";
                 }
 
               }
             }
             fclose($file);
 
-            echo $tocheck;
+           // echo $tocheck;
 
             if(@$tocheck=="False"){
               redirect('invoice_vieworders');
@@ -603,7 +645,7 @@ class Invoice extends My_Controller
         }
 
       }else{
-       // redirect("denied");
+        redirect("denied");
       }
 
   }
@@ -633,7 +675,10 @@ class Invoice extends My_Controller
       $data['loaded_page'] = "transactions/batch_printing"; 
       $data['form_name'] = "Batch Printing";
 
-      $data['invhdr'] = $this->Core_model->load_core_data_all('invoice_hdr');
+      $data['users'] = $this->Core_model->load_core_data('users');
+
+      $query = $this->db->query("Select DISTINCT created_by FROM invoice_hdr WHERE company_id='".$this->session->userdata('comp_id')."'");
+      $data['created'] = $query->result();
 
       $this->load->view('index',$data);
 
@@ -647,6 +692,22 @@ class Invoice extends My_Controller
           redirect("denied");
       } 
     }
+  }
+
+  public function get_last_series(){
+
+      $created = $_REQUEST['created'];
+
+      if($created!=""){
+        $whr = array('lprinted' => 't', 'created_by' => $created);
+      }else{
+        $whr = array('lprinted' => 't');
+      }
+
+      $reschk = $this->Core_model->load_core_data('invoice_hdr','','',$whr,'invoice_series DESC');//$table,$id='',$select='',$condition='',$order='',$wherein='',
+      
+      echo intval($reschk[0]->invoice_series)+1;
+
   }
   
 

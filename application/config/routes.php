@@ -80,7 +80,7 @@ $route['items/(:any)/(:any)'] = "Admin/items/$1/$2";
 
 $route['price_matrix'] = "Admin/price_matrix";
 $route['price_matrix/(:any)'] = "Admin/price_matrix/$1";
-$route['price_matrix/(:any)/(:any)'] = "Admin/price_matrix/$1/$2";
+$route['price_matrix/(:any)/(:any)'] = "Admin/price_matrix/$1/$2"; 
 
 
 $route['customers'] = "Admin/customers";
@@ -101,7 +101,7 @@ $route['invoice_uploadcheck'] = "Invoice/invoice_uploadcheck";
 $route['invoice_vieworders'] = "Invoice/invoice_vieworders"; 
 
 $route['batch_printing'] = "Invoice/batch_print"; 
-
+$route['get_last_series'] = "Invoice/get_last_series"; 
 
 $route['upload_csv'] = "Invoice/invoice_upload";
 $route['upload_csv/(:any)'] = "Invoice/invoice_upload/$1";

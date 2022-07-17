@@ -73,6 +73,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row pt-1">
+                                <div class="col-4"><b>Business Type</b></div>
+                                <div class="col-8">
+                                    <select class="form-control" name="cstatus" id="cstatus">
+                                        <option value='NONE'>NONE</option>
+                                        <option value='ZERO'>ZERO RATED</option>
+                                        <option value='VAT-EXEMPT'>VAT-EXEMPT</option>                                       
+                                    </select>
+                                </div>
+                            </div>
                 </div>
                 <div class="modal-footer">
 

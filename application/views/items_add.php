@@ -47,6 +47,15 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row pt-1">
+                                <div class="col-4"><b>VAT Type</b></div>
+                                <div class="col-8">
+                                    <select class="form-control" name="lnonvat" id="lnonvat">
+                                        <option value='False'>VATABLE</option>
+                                        <option value='True'>NON VATABLE</option>
+                                    </select>
+                                </div>
+                            </div>
 
                 </div>
                 <div class="modal-footer">

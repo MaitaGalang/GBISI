@@ -45,7 +45,17 @@
                                             foreach($pmlist as $rs_user){
                                         ?>
                                         <tr>
-                                            <td><?=$rs_user->batch_no?></td>
+                                            <td><?=$rs_user->batch_no?>
+                                                <?php
+                                                    if($rs_user->lposted=='t'){
+                                                        echo " - POSTED";
+                                                    }
+
+                                                    if($rs_user->lcancel=='t'){
+                                                        echo " - CANCELLED";
+                                                    }
+                                                ?>
+                                            </td>
                                             <td><?=$rs_user->effect_date?></td>
                                             <td><?=$rs_user->date_created?></td>
                                             <td><?=$rs_user->code_list?></td>
@@ -59,8 +69,13 @@
 
                                             <?php
                                                 if (in_array("edit", $access)){
+                                                    if($rs_user->lposted=='t' || $rs_user->lcancel=='t'){
+                                                        $xstat = "disabled";
+                                                    }else{
+                                                        $xstat = "";
+                                                    }
                                             ?>
-                                            <a href="<?=base_url("price_matrix/edit/".$rs_user->batch_no);?>" class="btn btn-success btn-sm" alt="Edit Details" title="Edit Details">
+                                            <a href="<?=base_url("price_matrix/edit/".$rs_user->batch_no);?>" class="btn btn-success btn-sm <?=$xstat?>" alt="Edit Details" title="Edit Details">
                                                 <i class="fas fa-pencil-alt"></i>
                                             </a>
                                             <?php
@@ -68,9 +83,44 @@
                                             ?>
 
                                             <?php
-                                                if (in_array("delete", $access)){
+                                                if (in_array("post", $access)){
+                                                    if($rs_user->lposted=='t' || $rs_user->lcancel=='t'){
+                                                        $xstat = "disabled";
+                                                    }else{
+                                                        $xstat = "";
+                                                    }
                                             ?>
-                                            <a href="Javascript:delete_data('<?php echo $rs_user->batch_no;?>');" class="btn btn-danger btn-sm deldata" alt="Delete" title="Delete">
+                                            <a href="Javascript:post_data('<?php echo $rs_user->batch_no;?>');" class="btn btn-primary btn-sm <?=$xstat?>" alt="Post Price Matrix" title="Post Price Matrix">
+                                                <i class="fas fa-check-circle"></i>
+                                            </a>
+                                            <?php
+                                                }
+                                            ?>
+
+                                            <?php
+                                                if (in_array("cancel", $access)){
+                                                    if($rs_user->lposted=='t' || $rs_user->lcancel=='t'){
+                                                        $xstat = "disabled";
+                                                    }else{
+                                                        $xstat = "";
+                                                    }
+                                            ?>
+                                            <a href="Javascript:cancel_data('<?php echo $rs_user->batch_no;?>');" class="btn btn-warning btn-sm <?=$xstat?>" alt="Cancel Price Matrix" title="Cancel Price Matrix">
+                                                <i class="fas fa-times-circle"></i>
+                                            </a>
+                                            <?php
+                                                }
+                                            ?>
+
+                                            <?php
+                                                if (in_array("delete", $access)){
+                                                    if($rs_user->lposted=='t' || $rs_user->lcancel=='t'){
+                                                        $xstat = "disabled";
+                                                    }else{
+                                                        $xstat = "";
+                                                    }
+                                            ?>
+                                            <a href="Javascript:delete_data('<?php echo $rs_user->batch_no;?>');" class="btn btn-danger btn-sm deldata <?=$xstat?>" alt="Delete" title="Delete">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
                                             <?php
@@ -193,12 +243,32 @@
 		});
 
 function delete_data(id){
-  sys_confirm('Delete','<?php echo $clang[$l='Delete Item?'] ?? $l;?>',id);
+  sys_confirm('Delete','<?php echo $clang[$l='Delete Price Matrix?'] ?? $l;?>',id);
 }
 
 function action_callback(id){
  
       location.href = "<?php echo base_url();?>price_matrix/delete/"+id; 
       
+}
+
+function post_data(id){
+  sys_confirm('Post','<?php echo $clang[$l='Post Price Matrix?'] ?? $l;?>',id);
+}
+
+function action_callback_Post(id){
+ 
+ location.href = "<?php echo base_url();?>price_matrix/post/"+id; 
+ 
+}
+
+function cancel_data(id){
+  sys_confirm('Cancel','<?php echo $clang[$l='Cancel Price Matrix?'] ?? $l;?>',id);
+}
+
+function action_callback_Cancel(id){
+ 
+ location.href = "<?php echo base_url();?>price_matrix/cancel/"+id; 
+ 
 }
 </script>

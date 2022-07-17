@@ -669,7 +669,7 @@ class Admin extends My_Controller
   public function price_matrix($typ="",$id=""){
     $data = $this->init_vals();
     
-    $query = $this->db->query("Select batch_no,effect_date,MAX(date_created) as date_created, string_agg(pm_code, ' | ') AS code_list FROM price_matrix_hdr WHERE company_id='".$this->session->userdata('comp_id')."' and is_active <> 3 GROUP BY batch_no,effect_date,date_created::TIMESTAMP::DATE ORDER BY MAX(date_created) DESC");
+    $query = $this->db->query("Select batch_no,effect_date,MAX(date_created) as date_created, string_agg(pm_code, ' | ') AS code_list, lposted,lcancel FROM price_matrix_hdr WHERE company_id='".$this->session->userdata('comp_id')."' and is_active <> 3 GROUP BY batch_no,effect_date,lposted,lcancel,date_created::TIMESTAMP::DATE ORDER BY MAX(date_created) DESC");
     //$queryres = $this->db->get(); 
 
     $data['pmlist'] = $query->result();
@@ -861,6 +861,56 @@ class Admin extends My_Controller
         $data['form_name'] = "Price Matrix Details: ".$data['pmhdr'][0]->batch_no;
 
         $this->load->view('index',$data);
+      }else{
+          redirect("denied");
+      } 
+    }
+    elseif($typ=="post"){
+      if (in_array("post", $data['access'])){
+
+          $datahdr = array(
+            'lposted' => TRUE,
+            'dpostcancel' => datetimedb, 
+            'poscanby' => $this->session->usrid
+          );
+          $model = $this->Core_model->custom_update('price_matrix_hdr',$datahdr, array('batch_no' => $id)); 
+
+          if($model['result']){ 
+            $this->session->set_flashdata("success","Price Matrix Successfuly Posted."); 
+
+          }else{
+            
+           $this->session->set_flashdata("error","error on posting."); 
+  
+          } 
+          
+          redirect("price_matrix","refresh");
+          
+      }else{
+          redirect("denied");
+      } 
+    }
+    elseif($typ=="cancel"){
+      if (in_array("cancel", $data['access'])){
+
+        $datahdr = array(
+          'lcancel' => TRUE,
+          'dpostcancel' => datetimedb, 
+          'poscanby' => $this->session->usrid
+        );
+        $model = $this->Core_model->custom_update('price_matrix_hdr',$datahdr, array('batch_no' => $id)); 
+
+        if($model['result']){ 
+          $this->session->set_flashdata("success","Price Matrix Successfuly Cancelled."); 
+
+        }else{
+          
+         $this->session->set_flashdata("error","error on cancelling."); 
+
+        } 
+        
+        redirect("price_matrix","refresh");
+        
       }else{
           redirect("denied");
       } 

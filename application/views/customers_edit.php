@@ -88,6 +88,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row pt-1">
+                                <div class="col-4"><b>Business Type</b></div>
+                                <div class="col-8">
+                                    <select class="form-control" name="cstatus" id="cstatus">
+                                        <option value='NONE' <?php echo ($custdetails->cstatus=='NONE') ? "selected" : "" ?>>NONE</option>
+                                        <option value='ZERO' <?php echo ($custdetails->cstatus=='ZERO') ? "selected" : "" ?>>ZERO RATED</option>
+                                        <option value='VAT-EXEMPT' <?php echo ($custdetails->cstatus=='VAT-EXEMPT') ? "selected" : "" ?>>VAT-EXEMPT</option>                                       
+                                    </select>
+                                </div>
+                            </div>
                 </div>
                 <div class="modal-footer">
 

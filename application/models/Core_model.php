@@ -155,6 +155,8 @@ class Core_model extends CI_Model
 
             $result = $this->db->update($table, $data); 
 
+           // echo $this->db->last_query();
+
             $this->tologfile($table,'Update',$this->db->last_query(),$id);
 
             $result = ($this->db->affected_rows() != 1) ? false : true;

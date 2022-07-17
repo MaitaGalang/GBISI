@@ -67,6 +67,23 @@
                                         ?>
                                 </div>
                             </div>
+                            <div class="row pt-1">
+                                <div class="col-4"><b>Business Type</b></div>
+                                <div class="col-8">
+                                        <?php
+                                            if($custdetails->cstatus=="NONE"){
+                                                echo "NONE";
+                                            }
+                                            if($custdetails->cstatus=="ZERO"){
+                                                echo "ZERO RATED";
+                                            }
+                                            if($custdetails->cstatus=="VAT-EXEMPT"){
+                                                echo "VAT-EXEMPT";
+                                            }
+
+                                        ?>
+                                </div>
+                            </div>
                 </div>
                 <div class="modal-footer">
 

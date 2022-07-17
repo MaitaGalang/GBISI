@@ -10,23 +10,25 @@
                                 <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>Invoice</th>
                                             <th>Ref No.</th>
                                             <th>Order Type</th>
-                                            <th>Series</th>
                                             <th>Code</th>
                                             <th>Name</th>
                                             <th>Date</th>
+                                            <th>Gross</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
-                                    <tr>
+                                        <tr>
+                                            <th>Invoice</th>
                                             <th>Ref No.</th>
                                             <th>Order Type</th>
-                                            <th>Series</th>
                                             <th>Customer CBB Code</th>
                                             <th>Name</th>
                                             <th>Date</th>
+                                            <th>Gross</th>
                                             <th>Actions</th>
                                         </tr>
                                     </tfoot>
@@ -35,6 +37,7 @@
                                             foreach($invlist as $rs_inv){
                                         ?>
                                         <tr>
+                                            <td><?=$rs_inv->invoice_series?></td>
                                             <td><?=$rs_inv->transaction_no?>
                                                 <?php
                                                     if($rs_inv->is_active==2){
@@ -45,8 +48,7 @@
                                                     }
                                                 ?>
                                             </td>
-                                            <td><?=$rs_inv->order_type;?></td>
-                                            <td><?=$rs_inv->invoice_series?></td>
+                                            <td><?=$rs_inv->order_type;?></td>                                           
                                             <td><?=$rs_inv->customer_cbb_code?></td>                                           
                                             <td>
                                                 <?php 
@@ -58,6 +60,7 @@
                                                 ?>
                                             </td>
                                             <td><?=$rs_inv->invoice_date;?></td>
+                                            <td align="right"><?=number_format($rs_inv->gross,2);?></td>
                                             <td align="center">
 
                                             
@@ -106,9 +109,9 @@ function delete_data(id){
   sys_confirm('Cancel','<?php echo $clang[$l='Cancel Invoice?'] ?? $l;?>',id);
 }
 
-function action_callback(id){
+function action_callback_Cancel(id){
  
-      location.href = "<?php echo base_url();?>invoices/cancel/"+id; 
+    location.href = "<?php echo base_url();?>invoices/cancel/"+id; 
       
 }
 </script>

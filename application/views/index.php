@@ -321,8 +321,17 @@
              closeOnConfirm: false 
          }, function(){   
              //swal("Done!", "", "success");  
+            if(t=="Post"){
+                    action_callback_Post(id, tp); 
+                    swal.close();
+             }else if(t=="Cancel"){
+                    action_callback_Cancel(id, tp); 
+                    swal.close();
+             }
+             else{
                  action_callback(id, tp); 
                  swal.close();
+             }
              
          });
        } 

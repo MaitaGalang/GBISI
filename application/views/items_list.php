@@ -18,23 +18,25 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            
                                             <th>CBB Code</th>
                                             <th>AX Code</th>
                                             <th>Description</th>
                                             <th>UOM</th>
                                             <th>Classification</th>
+                                            <th>VAT</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>ID</th>
+                                            
                                             <th>CBB Code</th>
                                             <th>AX Code</th>
                                             <th>Description</th>
                                             <th>UOM</th>
                                             <th>Classification</th>
+                                            <th>VAT</th>
                                             <th>Actions</th>
                                         </tr>
                                     </tfoot>
@@ -43,7 +45,7 @@
                                             foreach($itemslist as $rs_user){
                                         ?>
                                         <tr>
-                                            <td><?=$rs_user->id?></td>
+                                            
                                             <td><?=$rs_user->cbb_code?></td>
                                             <td><?=$rs_user->ax_code?></td>
                                             <td><?=$rs_user->description?></td>
@@ -65,6 +67,13 @@
                                                     }
                                                 ?>
                                             </td>
+                                            <td><?php
+                                            if($rs_user->lnonvat=="t"){
+                                                echo "Non-Vatable";
+                                            }else{
+                                                echo "Vatable";
+                                            }  
+                                                ?></td>
                                             <td align="center">
 
                                             <!--
