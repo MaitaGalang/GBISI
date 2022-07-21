@@ -10,9 +10,9 @@
                                 <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Invoice</th>
+                                            <!--<th>Invoice</th>-->
                                             <th>Ref No.</th>
-                                            <th>Order Type</th>
+                                            <!--<th>Order Type</th>-->
                                             <th>Code</th>
                                             <th>Name</th>
                                             <th>Date</th>
@@ -22,9 +22,9 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Invoice</th>
+                                            <!--<th>Invoice</th>-->
                                             <th>Ref No.</th>
-                                            <th>Order Type</th>
+                                            <!--<th>Order Type</th>-->
                                             <th>Customer CBB Code</th>
                                             <th>Name</th>
                                             <th>Date</th>
@@ -37,7 +37,7 @@
                                             foreach($invlist as $rs_inv){
                                         ?>
                                         <tr>
-                                            <td><?=$rs_inv->invoice_series?></td>
+                                            <!--<td><?//=$rs_inv->invoice_series?></td>-->
                                             <td><?=$rs_inv->transaction_no?>
                                                 <?php
                                                     if($rs_inv->is_active==2){
@@ -48,7 +48,7 @@
                                                     }
                                                 ?>
                                             </td>
-                                            <td><?=$rs_inv->order_type;?></td>                                           
+                                            <!--<td><?//=$rs_inv->order_type;?></td>  -->                                         
                                             <td><?=$rs_inv->customer_cbb_code?></td>                                           
                                             <td>
                                                 <?php 

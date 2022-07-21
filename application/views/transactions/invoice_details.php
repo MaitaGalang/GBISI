@@ -27,6 +27,7 @@
                                 <table class="table table-hover table-sm">
                                     <thead>
                                         <tr>
+                                            <th class="text-center">&nbsp;</th>
                                             <th class="text-center">Item Code</th>
                                             <th class="text-center">Description</th>
                                             <th class="text-center">UOM</th>
@@ -37,9 +38,12 @@
                                     </thead>
                                     <tbody>
                                         <?php
+                                        $cnt = 0;
                                             foreach($invdtl as $rsinvdtl){
+                                                $cnt++;
                                         ?>
                                         <tr>
+                                            <td><?=$cnt?>. </td>
                                             <td><?=$rsinvdtl->cbb_code?></td>
                                             <td><?=$rsinvdtl->description?></td>
                                             <td><?=$rsinvdtl->uom?></td>

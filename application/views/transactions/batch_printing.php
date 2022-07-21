@@ -55,7 +55,7 @@
 										</td>
 										<td width="77%" valign="top">
 											<form action="<?=base_url("invoices/print_preview")?>" method="POST" name="frmPreview" id="frmPreview" target="_blank">
-												<input type="hidden" name="hdnsseries" id="hdnsseries" value="">
+												<!--<input type="hidden" name="hdnsseries" id="hdnsseries" value="">-->
 											<fieldset>
 												<legend> <strong>TRANSACTIONS LIST</strong> </legend>
 												
@@ -64,7 +64,7 @@
 															<tr>
 																<th width="4%"><input name="allbox" type="checkbox" value="Check All" onClick="checkAll(this.checked)"></th>
 																<th width="11%" align="left">&nbsp;Ref No.</th>
-																<th width="8%" align="left">&nbsp;Series.</th>
+																<!--<th width="8%" align="left">&nbsp;Series.</th>-->
 																<th width="7%" align="left">&nbsp;Cust ID</th>
 																<th width="50%" align="left">&nbsp;Customer Name</th>
 																<th width="9%" align="left">&nbsp;Date</th>
@@ -146,13 +146,13 @@
 										
 										var chkbox = "<td><input type=\"checkbox\" name=\"chkTranNo[]\" id=\"chkTranNo"+item.id+"\" value=\""+item.id+"\" /></td>";
 										var ordno = "<td><a data-toggle=\"modal\" data-target=\"#largeModal\" class=\"dynamod\" href=\"<?=base_url("invoices/view/");?>"+item.transaction_no+"\" >"+item.transaction_no+"</a></td>";
-										var printno = "<td>" + item.invoice_series + "</td>";
+										//var printno = "<td>" + item.invoice_series + "</td>";
 										var custid = "<td>"+item.customer_cbb_code+"</td>";
 										var custnme = "<td>"+item.name+"</td>";
 										var ddate = "<td>"+item.invoice_date+"</td>";
 										var gross = "<td align=\"right\">"+nmgross.toFixed(4).replace(/(\d)(?=(\d{3})+\.)/g, "1,").toString()+"</td>";
 
-										$("#TblList tbody").append("<tr>" + chkbox + ordno + printno + custid + custnme + ddate + gross + "</tr>");
+										$("#TblList tbody").append("<tr>" + chkbox + ordno + custid + custnme + ddate + gross + "</tr>");
 									});
 								},
 								complete: function(data) {
@@ -165,8 +165,8 @@
 
 						$("#btnpreview").on("click", function(){
 
-							$.ajax ({
-                                url: "<?=base_url("get_last_series")?>",
+							/*$.ajax ({
+                                url: "<?//=base_url("get_last_series")?>",
                                 data: { created: $("#createdby").val() },
                                 async: false,
 								dataType: 'text',
@@ -175,11 +175,11 @@
 									$("#picseries").val(data);
 									$("#seriesModal").modal("show");
 								}
-							});
+							});*/
 
 
 							
-							//$("#frmPreview").submit();
+							$("#frmPreview").submit();
 						});
 
 						$("#btnproceed").on("click", function(){

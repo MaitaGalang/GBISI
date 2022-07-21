@@ -274,13 +274,15 @@ class Invoice extends My_Controller
      // echo implode(",", $_POST['chkTranNo']);
       //echo "<br>";
 
-      $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','',array('id' => $_POST['chkTranNo']));
+      
      // echo $this->db->last_query();
       //echo "<br>";
-      foreach($data['invhdr'] as $gettrans){
+      $invhdr = $this->Core_model->load_core_data('invoice_hdr','','*','','id ASC',array('id' => $_POST['chkTranNo']));
+      foreach($invhdr as $gettrans){
         @$translist[] = $gettrans->transaction_no;
       }
 
+      $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','',array('id' => $_POST['chkTranNo']));
       $data['invdtl'] = $this->Core_model->load_core_data('invoice_dtl','','*','','',array('transaction_no' => @$translist));
       //echo $this->db->last_query();
 
@@ -289,7 +291,7 @@ class Invoice extends My_Controller
       $data['params'] = $this->Core_model->load_core_data_all('parameters', '','',array('type' => 'PAYTERM'));
 
       $data['chkTranNo'] = $_POST['chkTranNo']; 
-      $data['seriesstar'] = $_POST['hdnsseries']; 
+      //$data['seriesstar'] = $_POST['hdnsseries']; 
 
       $this->load->view('transactions/invoice_preview',$data);
 
@@ -297,21 +299,22 @@ class Invoice extends My_Controller
 
     }
     elseif($typ=="print"){
-       $myseries = intval($_POST['hdnsseries']);
+       //$myseries = intval($_POST['hdnsseries']);
       //set as printed
       $model = $this->db->query("Update invoice_hdr set lprinted=true where id in('".implode("','", $_POST['chkTranNo'])."')");
 
       if($model){
         //$table,$id='',$select='',$condition='',$order='',$wherein='',$groupby=''
-        $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','id ASC',array('id' => $_POST['chkTranNo']));
-        foreach($data['invhdr'] as $gettrans){
+        $invhdr = $this->Core_model->load_core_data('invoice_hdr','','*','','id ASC',array('id' => $_POST['chkTranNo']));
+        foreach($invhdr as $gettrans){
           @$translist[] = $gettrans->transaction_no;
 
           //update series
-          $this->Core_model->custom_update('invoice_hdr',array('invoice_series' => $myseries),array('id' => $gettrans->id));
-          $myseries++;
+         // $this->Core_model->custom_update('invoice_hdr',array('invoice_series' => $myseries),array('id' => $gettrans->id));
+         // $myseries++;
         }
-  
+
+        $data['invhdr'] = $this->Core_model->load_core_data('invoice_hdr','','*','','id ASC',array('id' => $_POST['chkTranNo']));  
         $data['invdtl'] = $this->Core_model->load_core_data('invoice_dtl','','*','','',array('transaction_no' => @$translist));
   
         $data['custlist'] = $this->Core_model->load_core_data_all('customers');
@@ -705,8 +708,12 @@ class Invoice extends My_Controller
       }
 
       $reschk = $this->Core_model->load_core_data('invoice_hdr','','',$whr,'invoice_series DESC');//$table,$id='',$select='',$condition='',$order='',$wherein='',
-      
-      echo intval($reschk[0]->invoice_series)+1;
+
+      if (count($reschk)==0){
+        echo 1;
+      }else{
+        echo intval($reschk[0]->invoice_series)+1;
+      }
 
   }
   

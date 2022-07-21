@@ -2,7 +2,7 @@
 <head>
 <style type="text/css">
 body {
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Arial, Geneva, sans-serif;
 	font-size: 10px;
 	margin:0px;
 }
@@ -13,21 +13,21 @@ border-collapse:collapse;
 }
 
 td {
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Arial, Geneva, sans-serif;
 	font-size: 11px;
 }
 td.small {
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Arial, Geneva, sans-serif;
 	font-size: 11px;
 
 }
 td.smaller {
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Arial, Geneva, sans-serif;
 	font-size: 10px;
 
 }
 th {
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Arial, Geneva, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
 }
@@ -62,8 +62,8 @@ th {
 <tr>
 	<td align="right" style="height:5px; padding-right:15px">&nbsp;</td>
 </tr>
-<tr>
-	<td align="right" style="height:0.93in; padding-right:15px;" valign="bottom"><b><?=$rshdr->invoice_series?></b><br><b><?=$rshdr->transaction_no?></b></td>
+<tr> 
+	<td align="right" style="height:0.93in; padding-right:15px;" valign="bottom"><b></b><br><b><?=$rshdr->transaction_no?></b></td>
 </tr>
 <tr>
 	<td valign="top" style="height:7.5in;">
@@ -188,7 +188,7 @@ th {
                 <td style="width:1in;" class="smaller">Total Sales</td>
                 <td class="smaller" align="right" valign="bottom">
 					<?php
-					if(@$custvatable==""){
+					if(@$custvatable=="NONE"){
                         echo number_format(floatval(@$varGross)+floatval(@$varNonVatAmt),2);
                         
 					}else{
@@ -201,7 +201,7 @@ th {
                 <td style="width:1in;" class="smaller">Vatable Sales</td>
                 <td style="" class="smaller" align="right" valign="bottom">&nbsp;&nbsp;
 					<?php
-						if(@$custvatable==""){
+						if(@$custvatable=="NONE"){
 							echo number_format(@$varNetVat,2);
 							
 						}else{
@@ -249,7 +249,7 @@ th {
                 <td style="width:1in;" class="smaller">VAT-12%</td>
                 <td style="" class="smaller" align="right" valign="bottom">
 					<?php
-						if(@$custvatable=="" && floatval(@$varGross) <> 0){
+						if(@$custvatable=="NONE" && floatval(@$varGross) <> 0){
 							if(floatval(@$varLessVat) <> 0) {
                             	echo number_format(@$varLessVat,2);
 							}else{

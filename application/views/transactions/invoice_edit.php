@@ -23,7 +23,7 @@
                                             <?php
                                                 foreach($cust as $rscust){
                                             ?>
-                                            <option value="<?=$rscust->id?>" data-id="<?=$rscust->id?>" data-cbb="<?=$rscust->cbb_code?>" data-ax="<?=$rscust->ax_code?>" data-pm="<?=$rscust->price_code?>" <?php echo ($rscust->id==$invheader->customer_id) ? "selected" : ""?>><?=$rscust->cbb_code.": ".$rscust->name?></option>
+                                            <option value="<?=$rscust->id?>" data-id="<?=$rscust->id?>" data-cbb="<?=$rscust->cbb_code?>" data-ax="<?=$rscust->ax_code?>" data-pm="<?=$rscust->price_code?>" <?php echo ($rscust->id==$invheader->customer_id) ? "selected" : ""?>><?=$rscust->cbb_code.": ".$rscust->search_name?></option>
                                             <?php
                                                 }
                                             ?>
@@ -95,12 +95,15 @@
                                             <td><input type="hidden" name="txt_id" id="txt_id<?=$cnt?>" value="<?=$rsinvdtl->items_id?>" /> <input type="hidden" name="txt_ax" id="txt_ax<?=$cnt?>" value="<?=$rsinvdtl->ax_code?>" /> <input type="hidden" name="txt_cbb" id="txt_cbb<?=$cnt?>" value="<?=$rsinvdtl->cbb_code?>" /> <?=$rsinvdtl->cbb_code?></td>
                                             <td><input type="hidden" name="txt_desc" id="txt_desc<?=$cnt?>" value="<?=$rsinvdtl->description?>" /><?=$rsinvdtl->description?></td>
                                             <td><input type="hidden" name="txt_uom" id="txt_uom<?=$cnt?>" value="<?=$rsinvdtl->uom?>" /><?=$rsinvdtl->uom?></td>
-                                            <td><input type="text" class="numeric form-control form-control-sm text-right" name="txt_qty" id="txt_qty<?=$cnt?>" value="<?=$rsinvdtl->quantity?>" required autocomplete="off" /></td>
-                                            <td><input type="text" class="price form-control form-control-sm text-right" name="txt_price" id="txt_price<?=$cnt?>" readonly autocomplete="off" value="<?=$rsinvdtl->price?>"/></td>
+                                            <td><input type="text" class="numeric form-control form-control-sm text-right" name="txt_qty" id="txt_qty<?=$cnt?>" data-id="<?=$rsinvdtl->items_id?>" required autocomplete="off" min="1" value="<?=$rsinvdtl->quantity?>" /></td>
+                                            <td><input type="text" class="price form-control form-control-sm text-right" name="txt_price" id="txt_price<?=$cnt?>" readonly autocomplete="off" value="<?=floatval($rsinvdtl->price)?>"/></td>
                                             <td><input type="text" class="amt form-control form-control-sm text-right" name="txt_amount" id="txt_amount<?=$cnt?>" readonly autocomplete="off" value="<?=$rsinvdtl->amount?>" /></td>
                                             <td><input type="button" class="btn btn-sm btn-danger" value="Delete" id="btndel<?=$cnt?>" name="btndel<?=$rsinvdtl->id?>"  value="<?=$rsinvdtl->amount?>"/></td>
                                         </tr>
                                         <script>
+                                           
+
+
                                             $("#btndel<?=$cnt?>").on('click', function() {
                                                 $(this).closest('tr').remove();
                                             
@@ -151,7 +154,7 @@
                                     </div>
 
                                     <div class="col-2"> 
-                                        <input type='text' class="form-control form-control-sm text-right" id="txtgross" name="txtgross" value="<?=$invheader->gross?>" readonly />
+                                        <input type='text' class="form-control form-control-sm text-right" id="gross" name="gross" value="<?=$invheader->gross?>" readonly />
                                     </div>
                                     
                                 </div>
@@ -371,7 +374,7 @@
                             //alert("<?=base_url("invoices/update")?>/?transid="+$("#transaction_id").val()+"&transno="+$("#transaction_no").val()+"&custid="+$("#selcust").find(':selected').data('id')+"&cbbcode="+$("#selcust").find(':selected').data('cbb')+"&axcode="+$("#selcust").find(':selected').data('ax')+"&date="+$("#date_delivery").val()+"&remarks="+$("#txtcdescription").val()+"&gross="+$("#txtgross").val());
                             $.ajax ({
                                 url: "<?=base_url("invoices/update")?>",
-                                data: { transid: $("#transaction_id").val(), transno: $("#transaction_no").val(), custid: $("#selcust").find(':selected').data('id'), cbbcode: $("#selcust").find(':selected').data('cbb'), axcode: $("#selcust").find(':selected').data('ax'), date: $("#date_delivery").val(), remarks: $("#txtcdescription").val(), gross: $("#txtgross").val() },
+                                data: { transid: $("#transaction_id").val(), transno: $("#transaction_no").val(), custid: $("#selcust").find(':selected').data('id'), cbbcode: $("#selcust").find(':selected').data('cbb'), axcode: $("#selcust").find(':selected').data('ax'), date: $("#date_delivery").val(), remarks: $("#txtcdescription").val(), gross: $("#gross").val() },
                                 async: false,
                                 type: 'POST',
                                 beforeSend: function(){
@@ -451,6 +454,7 @@
 
     function get_price(itm, val){
         var xcz = "";
+
         $.ajax({    //create an ajax request to display.php
             url: "<?=base_url("check_price")?>",
             type: "POST",
@@ -475,7 +479,7 @@
             ngross = parseFloat(ngross) + parseFloat(amtz);
         }); 
 
-        $("#txtgross").val(ngross);
+        $("#gross").val(ngross.toFixed(2));
     }
 
     </script>

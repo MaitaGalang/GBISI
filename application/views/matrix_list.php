@@ -143,7 +143,7 @@
 	    <input type="hidden" name="hdnvers" id="hdnvers" value="">
     </form>
 
-    <div class="modal fade" id="PMPickModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal fade" id="PMPickModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -183,12 +183,61 @@
         </div>
     </div>
 
+    <!-- add version-->
+    <div class="modal fade" id="PMADDModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Price Matrix Codes</h5>
+                    
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="PicList">
+
+                    <div class="col-xs-12 nopadding">
+                        <div class="alert alert-danger nopadding" id="add_erradd"></div>        
+                    </div>   
+
+                        
+                    <div class="row nopadwtop">  
+
+
+                                <div class="col-3 pl-2">
+                                <b>Version Code</b> 
+                                </div>
+                                <div class="col-5 pl-1">
+                                <b>Version Description</b>  
+                                </div>
+
+                                <div class="col-1 pl-1">
+                                &nbsp;  
+                                </div>
+                                            
+                    </div>   
+                
+                    <!-- BODY -->
+                        <div style="height:15vh; display:inline" class="col-12 p-0 pre-scrollable" id="Tbladdver">
+                        </div> 
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="button" id="pmaddnewcode">Add New</button>
+                    
+                    <button class="btn btn-primary" type="button" id="btnaddproceed">Proceed</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script type="text/javascript"> 
 
-    $("#add_err").hide();
+    $("#add_err, #add_erradd").hide();
     $("#pmadd").on("click", function(){
 
-        $("#TblItemver").empty();
+        $("#TblPickver").empty();
 
         $.ajax ({
 				url: "<?=base_url();?>price_matrix/load",
@@ -198,9 +247,10 @@
                       console.log(data);
 					  $.each(data,function(index,item){
 						  
-						  var divhead = "<div class=\"itmverdet row nopadwtop\">";
-						  var divcode = "<div class=\"col-3 pl-2\">  <div class=\"form-check\"><input class=\"form-check-input\" name=\"chkpricever[]\" type=\"checkbox\" value=\""+item.code+ "\"><label class=\"form-check-label\" for=\"flexCheckDefault\">"+item.code+"</label></div> </div>";
+                        var divhead = "<div class=\"itmverdet row nopadwtop\">";
+						  var divcode = "<div class=\"col-3 pl-2\">  <div class=\"form-check\"><input name=\"verid\" type=\"hidden\" value=\"new\"> <input class=\"form-check-input\" name=\"chkpricever[]\" type=\"checkbox\" value=\""+item.code+ "\"><label class=\"form-check-label\" for=\"flexCheckDefault\">"+item.code+"</label></div> </div>";
 						  var divdet = "<div class=\"col-5 pl-1\"> "+item.description+ "</div>";
+                          
 						 
 						  var divend = "</div>";
 						  
@@ -212,6 +262,49 @@
 
             $("#PMPickModal").modal('show');
 
+
+    });
+
+    $("#pmaddcode").on("click", function(){
+        $("#Tbladdver").empty();
+
+        $.ajax ({
+				url: "<?=base_url();?>price_matrix/load",
+				async: false,
+				dataType: 'json',
+				success: function( data ) {
+                      console.log(data);
+					  $.each(data,function(index,item){
+
+                        var divhead = "<div class=\"itmverdet row pt-1\">";
+						  var divcode = "<div class=\"col-3\">  <div class=\"form-check\"> <input name=\"verid\" type=\"hidden\" value=\""+item.id+"\"> <input class=\"form-control form-control-sm\" name=\"chkpricever\" type=\"text\" value=\""+item.code+"\" readonly></div> </div>";
+						  var divdet = "<div class=\"col-8\"> <input class=\"form-control form-control-sm\" name=\"chkpriceverdesc\" type=\"text\" value=\""+item.description+ "\"> </div>";
+						  var divdel = "<div class=\"col-1 pl-1\">  </div>";
+						 
+						 
+						  var divend = "</div>";
+						  
+						  $("#Tbladdver").append(divhead + divcode + divdet + divdel + divend);
+					  });
+				}
+			
+			});
+        $("#PMADDModal").modal('show');
+    });
+
+    $("#pmaddnewcode").on("click", function(){
+   
+
+        var divhead = "<div class=\"itmverdet row pt-1\">";
+
+		var divcode = "<div class=\"col-3\">  <div class=\"form-check\"> <input name=\"verid\" type=\"hidden\" value=\"new\"> <input class=\"form-control form-control-sm\" name=\"chkpricever\" type=\"text\" value=\"\"></div> </div>";
+		var divdet = "<div class=\"col-8\"> <input class=\"form-control form-control-sm\" name=\"chkpriceverdesc\" type=\"text\" value=\"\"> </div>";
+		var divdel = "<div class=\"col-1 pl-1\">  <button class=\"btn btn-danger btn-sm\" type=\"button\" id=\"pmaddnewcode\">Delete</button> </div>";
+						 
+						 
+		var divend = "</div>";
+						  
+		$("#Tbladdver").append(divhead + divcode + divdet + divdel+ divend);
 
     });
 

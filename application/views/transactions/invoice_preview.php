@@ -58,7 +58,7 @@ function Print(){
 
 <?php
 	$cnt=0;
-	$myseries = intval($seriesstar);
+	//$myseries = intval($seriesstar);
 	foreach($invhdr as $rshdr){
 		$cnt++;
 
@@ -79,7 +79,7 @@ function Print(){
 	<td align="right" style="height:5px; padding-right:15px">&nbsp;</td>
 </tr>
 <tr>
-	<td align="right" style="height:0.93in; padding-right:15px;" valign="bottom"><b><?=$myseries?></b><br><b><?=$rshdr->transaction_no?></b></td>
+	<td align="right" style="height:0.93in; padding-right:15px;" valign="bottom"><b></b><br><b><?=$rshdr->transaction_no?></b></td>
 </tr>
 <tr>
 	<td valign="top" style="height:7.5in;">
@@ -204,7 +204,7 @@ function Print(){
                 <td style="width:1in;" class="smaller">Total Sales</td>
                 <td class="smaller" align="right" valign="bottom">
 					<?php
-					if(@$custvatable==""){
+					if(@$custvatable=="NONE"){
                         echo number_format(floatval(@$varGross)+floatval(@$varNonVatAmt),2);
                         
 					}else{
@@ -217,7 +217,7 @@ function Print(){
                 <td style="width:1in;" class="smaller">Vatable Sales</td>
                 <td style="" class="smaller" align="right" valign="bottom">&nbsp;&nbsp;
 					<?php
-						if(@$custvatable==""){
+						if(@$custvatable=="NONE"){
 							echo number_format(@$varNetVat,2);
 							
 						}else{
@@ -265,7 +265,7 @@ function Print(){
                 <td style="width:1in;" class="smaller">VAT-12%</td>
                 <td style="" class="smaller" align="right" valign="bottom">
 					<?php
-						if(@$custvatable=="" && floatval(@$varGross) <> 0){
+						if(@$custvatable=="NONE" && floatval(@$varGross) <> 0){
 							if(floatval(@$varLessVat) <> 0) {
                             	echo number_format(@$varLessVat,2);
 							}else{
@@ -324,7 +324,7 @@ function Print(){
 
 <?php
 
-	$myseries++;
+	//$myseries++;
 
 	}
 
@@ -336,7 +336,7 @@ function Print(){
 			echo "<input type='hidden' name='chkTranNo[]' value='".$rschkTranNo."'>";
 		}
 	?>
-	<input type="hidden" name="hdnsseries" id="hdnsseries" value="<?=$seriesstar?>">
+	<!--<input type="hidden" name="hdnsseries" id="hdnsseries" value="<?//=$seriesstar?>">-->
 </form>
 
 </body>

@@ -20,7 +20,7 @@
                                             <?php
                                                 foreach($cust as $rsitms){
                                             ?>
-                                            <option value="<?=$rsitms->id?>" data-id="<?=$rsitms->id?>" data-cbb="<?=$rsitms->cbb_code?>" data-ax="<?=$rsitms->ax_code?>" data-pm="<?=$rsitms->price_code?>" ><?=$rsitms->name?></option>
+                                            <option value="<?=$rsitms->id?>" data-id="<?=$rsitms->id?>" data-cbb="<?=$rsitms->cbb_code?>" data-ax="<?=$rsitms->ax_code?>" data-pm="<?=$rsitms->price_code?>" ><?=$rsitms->search_name?></option>
                                             <?php
                                                 }
                                             ?>
